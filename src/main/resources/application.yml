@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: securehub
+
+  datasource:
+    url: ${MYSQL_URL:jdbc:mysql://localhost:3306/secure}
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:1234}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/securehub}
+
+  servlet:
+    multipart:
+      max-file-size: 25MB
+      max-request-size: 25MB
+
+server:
+  port: ${PORT:8080}
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:change-this-development-secret-to-a-long-random-value}
+    expiration-ms: ${JWT_EXPIRATION_MS:900000}
+
+  storage-path: ${STORAGE_PATH:./storage}
