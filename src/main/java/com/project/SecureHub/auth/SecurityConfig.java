@@ -44,7 +44,7 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration); return source;
     }
     @Bean SecurityFilterChain filterChain(HttpSecurity http, JwtService jwt, UserDetailsService details) throws Exception {
-        http.csrf(c -> c.disable()).cors(c -> {}).authorizeHttpRequests(a -> a.requestMatchers("/api/auth/**", "/actuator/health", "/oauth2/**", "/login/**").permitAll().anyRequest().authenticated());
+        http.csrf(c -> c.disable()).cors(c -> {}).authorizeHttpRequests(a -> a.requestMatchers("/api/auth/**", "/actuator/health").permitAll().anyRequest().authenticated());
 
         http.addFilterBefore(new OncePerRequestFilter() {
             @Override protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
