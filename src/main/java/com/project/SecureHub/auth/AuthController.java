@@ -15,13 +15,23 @@ public class AuthController {
         this.auth = auth;
     }
     public record AuthRequest(@Email @NotBlank String email, @Size(min=8) String password, String displayName) {}
+    public record RegisterOtpRequest(@Email @NotBlank String email, @Size(min=8) String password, String displayName) {}
+    public record VerifyRegistrationRequest(@Email @NotBlank String email, @NotBlank String otp, @Size(min=8) String password, String displayName) {}
     public record AuthResponse(String token, String refreshToken, String email, String displayName) {}
+    public record RegistrationResponse(String email, String otp, String message) {}
     public record RefreshRequest(@NotBlank String refreshToken) {}
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    AuthResponse register(@Valid @RequestBody AuthRequest request)
+    RegistrationResponse register(@Valid @RequestBody RegisterOtpRequest request)
     {
-        return response(auth.register(request.email(), request.password(), request.displayName()));
+        String otp = auth.startRegistration(request.email(), request.password(), request.displayName());
+        return new RegistrationResponse(request.email(), otp, "Verification OTP sent to your email. Enter it to complete registration.");
+    }
+    @PostMapping("/register/verify")
+    @ResponseStatus(HttpStatus.CREATED)
+    AuthResponse verifyRegistration(@Valid @RequestBody VerifyRegistrationRequest request)
+    {
+        return response(auth.completeRegistration(request.email(), request.otp(), request.password(), request.displayName()));
     }
     @PostMapping("/login")
     AuthResponse login(@Valid @RequestBody AuthRequest request)
